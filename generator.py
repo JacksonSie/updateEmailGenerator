@@ -37,7 +37,6 @@ writeFile(readFile('newline.html'))
 writeFile(readFile('updates/updatesBegin.html'))
 
 writeFile(readFile('updates/updatesTitle.html'))
-
 writeFile(readFile('updates/updatesTableBegin.html'))
 
 table = readFile('updates/updatesTable.html')
@@ -53,6 +52,12 @@ table = replaceTarget(table, '[Versions]', version)
 
 writeFile(table)
 writeFile(readFile('updates/updatesTable.html'))
+writeFile('</tbody></table>')
+
+writeFile(readFile('newline.html'))
+
+writeFile(readFile('updates/updatesTitle.html'))
+writeFile(readFile('updates/updatesTableBegin.html'))
 writeFile(readFile('updates/updatesTable.html'))
 writeFile('</tbody></table>')
 
