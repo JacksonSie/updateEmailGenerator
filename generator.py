@@ -57,7 +57,7 @@ for i in range(2, nrows) :
 	CVEs = ''
 	CVEtemp = readFile('updates/updatesCVE.html')
 	for CVE in str(updates.Cells(i, 2)).split(',') : 
-		cve = CVE.split(':')
+		cve = CVE.split('@')
 		temp = CVEtemp
 		temp = replaceTarget(temp, '[CVEnumber]', cve[0])
 		temp = replaceTarget(temp, '[CVEurl]', cve[1])
