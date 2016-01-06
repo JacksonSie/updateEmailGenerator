@@ -1,4 +1,8 @@
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
+import win32com.client
 
 def writeFile(string) :
 	f = open('email.html','a')
@@ -11,9 +15,15 @@ def readFile(fileName) :
 
 def replaceTarget(source, target, replace) :
 	return source.replace(target, replace)
-
+# init
 f = open('email.html','w')
 f.close()
+
+# openExcel
+excelFilePath = '../updateEmailGenerator/email.xlsx'
+excelapp = win32com.client.Dispatch("Excel.Application")
+excelapp.Visible = 0
+excelxls = excelapp.Workbooks.Open(excelFilePath)
 
 # begin
 writeFile(readFile('begin.html'))
@@ -21,17 +31,16 @@ writeFile(readFile('begin.html'))
 # news
 writeFile(readFile('news/newsBegin.html'))
 
-writeFile(replaceTarget(readFile('news/newsTitle.html'), '[newsTitle]', 'AAAAAAAAA'))
-writeFile(readFile('news/newsUrl.html'))
-writeFile(readFile('news/newsContent.html'))
+news = excelxls.Worksheets("news")
+used = news.UsedRange
+nrows = used.Row + used.Rows.Count
 
-writeFile(readFile('newline.html'))
-
-writeFile(readFile('news/newsTitle.html'))
-writeFile(readFile('news/newsUrl.html'))
-writeFile(readFile('news/newsContent.html'))
-
-writeFile(readFile('newline.html'))
+for i in range(2, nrows) :
+	print 'news : ' + str(i - 1)
+	writeFile(replaceTarget(readFile('news/newsTitle.html'), '[newsTitle]', str(news.Cells(i, 1))))
+	writeFile(replaceTarget(readFile('news/newsUrl.html'), '[newsUrl]', str(news.Cells(i, 2))))
+	writeFile(replaceTarget(readFile('news/newsContent.html'), '[newsContent]', str(news.Cells(i, 3))))
+	writeFile(readFile('newline.html'))
 
 # updates
 writeFile(readFile('updates/updatesBegin.html'))
@@ -63,3 +72,5 @@ writeFile('</tbody></table>')
 
 # end
 writeFile(readFile('end.html'))
+
+excelapp.Quit()
