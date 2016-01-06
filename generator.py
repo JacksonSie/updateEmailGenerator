@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+import re
 import win32com.client
 
 def writeFile(string) :
@@ -16,6 +19,21 @@ def readFile(fileName) :
 def replaceTarget(source, target, replace) :
 	return source.replace(target, replace)
 
+def addChineseTag(string) :
+	inFlag = 0;
+	output = ''
+	for c in string.decode('utf-8') :
+		if ord(c) >= 128 and inFlag == 0 :
+			output += u'<span style="font-size:14.0pt;font-family:標楷體">'
+			inFlag = 1
+		if ord(c) < 128 and inFlag == 1 :
+			output += u'</span>'
+			inFlag = 0
+		output += c
+	if inFlag == 1 :
+		output += u'</span>'
+	return output
+		
 # init
 f = open('email.html','w')
 f.close()
@@ -38,9 +56,9 @@ nrows = used.Row + used.Rows.Count
 
 for i in range(2, nrows) :
 	print 'news : ' + str(i - 1)
-	writeFile(replaceTarget(readFile('news/newsTitle.html'), '[newsTitle]', str(news.Cells(i, 1))))
+	writeFile(replaceTarget(readFile('news/newsTitle.html'), '[newsTitle]', addChineseTag(str(news.Cells(i, 1)))))
 	writeFile(replaceTarget(readFile('news/newsUrl.html'), '[newsUrl]', str(news.Cells(i, 2))))
-	writeFile(replaceTarget(readFile('news/newsContent.html'), '[newsContent]', str(news.Cells(i, 3))))
+	writeFile(replaceTarget(readFile('news/newsContent.html'), '[newsContent]', addChineseTag(str(news.Cells(i, 3)))))
 	writeFile(readFile('newline.html'))
 
 # updates
