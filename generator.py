@@ -15,6 +15,7 @@ def readFile(fileName) :
 
 def replaceTarget(source, target, replace) :
 	return source.replace(target, replace)
+
 # init
 f = open('email.html','w')
 f.close()
@@ -45,30 +46,48 @@ for i in range(2, nrows) :
 # updates
 writeFile(readFile('updates/updatesBegin.html'))
 
-writeFile(readFile('updates/updatesTitle.html'))
-writeFile(readFile('updates/updatesTableBegin.html'))
+updates = excelxls.Worksheets("updates")
+used = updates.UsedRange
+nrows = used.Row + used.Rows.Count
 
-table = readFile('updates/updatesTable.html')
-cve = readFile('updates/updatesCVE.html')
-cve += readFile('updates/updatesCVE.html')
-cve += readFile('updates/updatesCVE.html')
+title = ''
+for i in range(2, nrows) :
+	print 'tables : ' + str(i - 1)
+	table = readFile('updates/updatesTable.html')
+	CVEs = ''
+	CVEtemp = readFile('updates/updatesCVE.html')
+	for CVE in str(updates.Cells(i, 2)).split(',') : 
+		cve = CVE.split(':')
+		temp = CVEtemp
+		temp = replaceTarget(temp, '[CVEnumber]', cve[0])
+		temp = replaceTarget(temp, '[CVEurl]', cve[1])
+		CVEs += temp
 
-version = readFile('updates/updatesVersion.html')
-version += readFile('updates/updatesVersion.html')
+	table = replaceTarget(table, '[content]', str(updates.Cells(i, 3)))
+	table = replaceTarget(table, '[suggest]', str(updates.Cells(i, 4)))
+	
+	Versions = ''
+	versionTemp = readFile('updates/updatesVersion.html')
+	for version in str(updates.Cells(i, 5)).split(',') : 
+		Versions += replaceTarget(versionTemp, '[version]', version)
+	table = replaceTarget(table, '[risk]', str(updates.Cells(i, 6)))
 
-table = replaceTarget(table, '[CVEs]', cve)
-table = replaceTarget(table, '[Versions]', version)
+	table = replaceTarget(table, '[CVEs]', CVEs)
+	table = replaceTarget(table, '[Versions]', Versions)
 
-writeFile(table)
-writeFile(readFile('updates/updatesTable.html'))
+	if title != str(updates.Cells(i, 1)) : 
+		if (title != '') : 
+			writeFile('</tbody></table>')
+			writeFile(readFile('newline.html'))
+		title = str(updates.Cells(i, 1))
+		writeFile(replaceTarget(readFile('updates/updatesTitle.html'), '[updatesTitle]', title))
+		writeFile(readFile('updates/updatesTableBegin.html'))
+		writeFile(table)
+	else : 	
+		writeFile(table)
+
 writeFile('</tbody></table>')
-
 writeFile(readFile('newline.html'))
-
-writeFile(readFile('updates/updatesTitle.html'))
-writeFile(readFile('updates/updatesTableBegin.html'))
-writeFile(readFile('updates/updatesTable.html'))
-writeFile('</tbody></table>')
 
 # end
 writeFile(readFile('end.html'))
