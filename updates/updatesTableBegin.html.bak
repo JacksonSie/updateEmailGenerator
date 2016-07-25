@@ -1,0 +1,36 @@
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" style="border-collapse:collapse">
+	<tbody>
+		<tr>
+			<td width="162" style="width:96.9pt;border:solid windowtext 1.0pt;padding:0cm 5.4pt 0cm 5.4pt">
+				<p class="MsoNormal" align="center" style="text-align:center">
+					<span style="font-family:標楷體">弱點編號</span>
+					<span lang="EN-US" style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
+						<o:p></o:p>
+					</span>
+				</p>
+			</td>
+			<td width="495" style="width:297.05pt;border:solid windowtext 1.0pt;border-left:none;padding:0cm 5.4pt 0cm 5.4pt">
+				<p class="MsoNormal" align="center" style="text-align:center">
+					<span style="font-family:標楷體">說明</span>
+					<span lang="EN-US" style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
+						<o:p></o:p>
+					</span>
+				</p>
+			</td>
+			<td width="268" style="width:160.65pt;border:solid windowtext 1.0pt;border-left:none;padding:0cm 5.4pt 0cm 5.4pt">
+				<p class="MsoNormal" align="center" style="text-align:center">
+					<span style="font-family:標楷體">影響版本</span>
+					<span lang="EN-US" style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
+						<o:p></o:p>
+					</span>
+				</p>
+			</td>
+			<td width="152" style="width:91.1pt;border:solid windowtext 1.0pt;border-left:none;padding:0cm 0cm 0cm 0cm">
+				<p class="MsoNormal" align="center" style="text-align:center">
+					<span style="font-family:標楷體">風險值</span><span lang="EN-US" style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">(CVSS)/<br></span><span style="font-family:標楷體">公告評分</span>
+					<span lang="EN-US" style="font-family:&quot;Times New Roman&quot;,&quot;serif&quot;">
+						<o:p></o:p>
+					</span>
+				</p>
+			</td>
+		</tr>
