@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+from os.path import abspath
+import re
+from cgi import escape
+
 def htmlencode(string):
     return escape(string).replace('\n','<br/>')
 
 def writeFile(string) :
-    f = open('email.html','a')
+    global email
+    f = open(email_html,'a')
     f.write(string)
     f.close()
 
@@ -32,21 +40,38 @@ def addChineseTag(string) :
         
 
 def main():
+    global email_html
+    global email_doc
+    global excelFilePath
+    global begin
+    global newsBegin
+    global newsTitle
+    global newsUrl
+    global newsContent
+    global newline
+    global updatesBegin
+    global updatesTable
+    global updatesCVE
+    global updatesVersion
+    global updatesTitle
+    global updatesTableBegin
+    global newline
+    global end
+    
     # init
-    f = open('email.html','w')
+    f = open(email_html,'w')
     f.close()
 
     # openExcel
-    excelFilePath = abspath(r'../updateEmailGenerator/email.xlsx')
     excelapp = win32com.client.Dispatch("Excel.Application")
     excelapp.Visible = 0
     excelxls = excelapp.Workbooks.Open(excelFilePath)
 
     # begin
-    writeFile(readFile('begin.html'))
+    writeFile(readFile(begin))
 
     # news
-    writeFile(readFile('news/newsBegin.html'))
+    writeFile(readFile(newsBegin))
 
     news = excelxls.Worksheets("news")
     used = news.UsedRange
@@ -54,13 +79,13 @@ def main():
 
     for i in range(2, nrows) :
         print ('news : ' + str(i - 1))
-        writeFile(replaceTarget(readFile('news/newsTitle.html'), '[newsTitle]', addChineseTag(str(news.Cells(i, 1)))))
-        writeFile(replaceTarget(readFile('news/newsUrl.html'), '[newsUrl]', str(news.Cells(i, 2))))
-        writeFile(replaceTarget(readFile('news/newsContent.html'), '[newsContent]', addChineseTag(str(news.Cells(i, 3)))))
-        writeFile(readFile('newline.html'))
+        writeFile(replaceTarget(readFile(newsTitle), '[newsTitle]', addChineseTag(str(news.Cells(i, 1)))))
+        writeFile(replaceTarget(readFile(newsUrl), '[newsUrl]', str(news.Cells(i, 2))))
+        writeFile(replaceTarget(readFile(newsContent), '[newsContent]', addChineseTag(str(news.Cells(i, 3)))))
+        writeFile(readFile(newline))
 
     # updates
-    writeFile(readFile('updates/updatesBegin.html'))
+    writeFile(readFile(updatesBegin))
 
     updates = excelxls.Worksheets("updates")
     used = updates.UsedRange
@@ -69,9 +94,9 @@ def main():
     title = ''
     for i in range(2, nrows) :
         print ('tables : ' + str(i - 1))
-        table = readFile('updates/updatesTable.html')
+        table = readFile(updatesTable)
         CVEs = ''
-        CVEtemp = readFile('updates/updatesCVE.html')
+        CVEtemp = readFile(updatesCVE)
         for CVE in re.split('\n|,',str(updates.Cells(i, 2))):
             if (len(CVE) == 0 or type(CVE) == 'NoneType') : continue
             cve = CVE.split('@')
@@ -84,7 +109,7 @@ def main():
         table = replaceTarget(table, '[suggest]', str(updates.Cells(i, 4)))
         
         Versions = ''
-        versionTemp = readFile('updates/updatesVersion.html')
+        versionTemp = readFile(updatesVersion)
         for version in str(updates.Cells(i, 5)).split(',') : 
             Versions += replaceTarget(versionTemp, '[version]', htmlencode(version))
         table = replaceTarget(table, '[risk]', str(updates.Cells(i, 6)))
@@ -94,38 +119,58 @@ def main():
         if title != str(updates.Cells(i, 1)) : 
             if (title != '') : 
                 writeFile('</tbody></table>')
-                writeFile(readFile('newline.html'))
+                writeFile(readFile(newline))
             title = str(updates.Cells(i, 1))
-            writeFile(replaceTarget(readFile('updates/updatesTitle.html'), '[updatesTitle]', title))
-            writeFile(readFile('updates/updatesTableBegin.html'))
+            writeFile(replaceTarget(readFile(updatesTitle), '[updatesTitle]', title))
+            writeFile(readFile(updatesTableBegin))
             writeFile(table)
         else :     
             writeFile(table)
 
     writeFile('</tbody></table>')
-    writeFile(readFile('newline.html'))
+    writeFile(readFile(newline))
 
     # end
-    writeFile(readFile('end.html'))
+    writeFile(readFile(end))
 
     #save as word
     word = win32com.client.Dispatch('Word.Application')
-    doc = word.Documents.Add(abspath('email.html'))
-    doc.SaveAs(abspath('email.doc'),FileFormat=0)
+    doc = word.Documents.Add(abspath(email_html))
+    doc.SaveAs(abspath(email_doc),FileFormat=0)
     doc.Close()
     word.Quit()
 
     excelapp.Quit()
 if __name__ == '__main__':
-    import sys
-    reload(sys)
-    sys.setdefaultencoding('utf-8')
-    from os.path import abspath
-    import re
-    from cgi import escape
     try :
         import win32com.client
     except ImportError:
         print ('plz install win32com')
-
+    
+    #output
+    email_html = abspath(r'../test/email.html')
+    email_doc = abspath(r'../test/email.doc')
+    
+    #news
+    excelFilePath = abspath(r'../test/email.xlsx')
+    email = abspath(r'../test/email.html')
+    begin = abspath(r'../sources/begin.html')
+    newsBegin = abspath(r'../sources/news/newsBegin.html' )
+    newsTitle = abspath(r'../sources/news/newsTitle.html' )
+    newsUrl = abspath(r'../sources/news/newsUrl.html' )
+    newsContent = abspath(r'../sources/news/newsContent.html' )
+    newline = abspath(r'../sources/newline.html' )
+    
+    #updates
+    updatesBegin = abspath(r'../sources/updates/updatesBegin.html' )
+    updatesTable = abspath(r'../sources/updates/updatesTable.html' )
+    updatesCVE = abspath(r'../sources/updates/updatesCVE.html' )
+    updatesVersion = abspath(r'../sources/updates/updatesVersion.html' )
+    updatesTitle = abspath(r'../sources/updates/updatesTitle.html' )
+    updatesTableBegin = abspath(r'../sources/updates/updatesTableBegin.html' )
+    newline = abspath(r'../sources/newline.html')
+    end = abspath(r'../sources/end.html')
+    
+    
+    
     main()
