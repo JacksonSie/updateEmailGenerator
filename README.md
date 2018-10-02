@@ -6,7 +6,7 @@
 ## 使用方式:
 ```sh
 1. 更新 test/email.xlsx ，並依據updatesTitle排序 (更新方式請看email.xlsx)
-2. ~>python test/generator.py
+2. $ python test/generator.py
 3. 在產出 test/email.html 與 test/email.doc ，並依據需要微調排版
 ```
 
